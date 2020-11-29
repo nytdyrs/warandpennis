@@ -1,0 +1,55 @@
+class CharsStat:
+
+    def __init__(self, filename=None):
+        self.content = None
+        self.fh = None
+        self.coding = 'cp1251'
+        self.stat = {}
+        self.chars = 0
+        self.charsalpha = 0
+
+    def ReadFile(self):
+        self.fh = open(filename, 'r', encoding=self.coding)
+        self.content = self.fh.read()
+        self.fh.close()
+
+    def OutputContent(self):
+        print(self.content[0])
+
+    def Getstat(self):
+        alfaset = set()
+        for i in range(len(self.content)):
+            self.chars += 1
+            if not self.content[i].isalpha():
+                continue
+            if self.content[i] in alfaset:
+                self.stat[self.content[i]] += 1
+            else:
+                alfaset.add(self.content[i])
+                self.stat[self.content[i]] = 1
+            self.charsalpha += 1
+        # print(self.stat)
+        # print(alfaset)
+
+    def Output(self, sort="key_desc"):
+
+        print("+---------+----------+")
+        print("| Буква   | Частота  |")
+        l = list(self.stat.keys())
+        if sort == "key_desc":
+            l.sort()
+        elif sort == "key_asc":
+            l.sort(reverse=True)
+        for r in l:
+            print("|  {:7s}| {:7d}  |".format(r, self.stat[r]))
+        print("+---------+----------+")
+        print("|   All   |  {:7d} |" .format(self.charsalpha))
+        print("+---------+----------+")
+
+
+filename = "python_snippets/voyna-i-mir.txt"
+stat = CharsStat(filename)
+stat.ReadFile()
+stat.Getstat()
+
+stat.Output(sort="key_asc")
